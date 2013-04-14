@@ -1,0 +1,19 @@
+name: Guards
+main: com.bxbservers.Guards.Guards
+version: 1.0
+commands:
+   duty:
+      description: This Command toggles on duty Status.
+      usage: /<command>
+      permission: guards.duty
+      permission-message: You are not a Guard.
+   kit:
+      description: This Command issues the Guard Kit.
+      usage: /<command>
+      permission: guards.kit
+      permission-message: Visit the Guard room to refill Kit.
+   guard:
+      description: This Command Promotes a Member to guard status.
+      usage: /<command> <Username>
+      permission: guards.guard
+      permission-message: You do not have permission to do this.

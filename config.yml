@@ -1,0 +1,59 @@
+dropGuardHeads: true
+dropPlayerHeads: true
+playerHeadFrequency: 10
+kitSignHeader: [Armoury]
+kits:
+  Guard:
+    potions:
+      - SPEED:0
+      - DAMAGE_RESISTANCE:2
+    items:
+      helmet: chainmail
+      chestplate: chainmail
+      leggings: chainmail
+      boots: chainmail
+      helmetEnchant: '0:20 1:10 34:10'
+      chestplateEnchant: '0:20 1:10 34:10'
+      leggingsEnchant: '0:20 1:10 34:10'
+      bootsEnchant: '0:20 1:10 34:10'
+      '0': '276 16:8 34:4'
+      '1': '261 48:4 51:1 50:2 49:2'
+      '2': '280 19:30'
+      '3': '294'
+      '4': '322:5:1'
+      '5': '0'
+      '6': '0'
+      '7': '0'
+      '8': '0'
+      '9': '262'
+      '10': '0'
+      '11': '0'
+      '12': '0'
+      '13': '0'
+      '14': '0'
+      '15': '0'
+      '16': '0'
+      '17': '0'
+      '18': '0'
+      '19': '0'
+      '20': '0'
+      '21': '0'
+      '22': '0'
+      '23': '0'
+      '24': '0'
+      '25': '0'
+      '26': '0'
+      '27': '0'
+      '28': '0'
+      '29': '0'
+      '30': '0'
+      '31': '0'
+      '32': '0'
+      '33': '0'
+      '34': '0'
+      '35': '0'
+      names:
+        '9': '<username>'
+        '2': 'Baton'
+        '3': 'PepperSpray'
+onDuty:
