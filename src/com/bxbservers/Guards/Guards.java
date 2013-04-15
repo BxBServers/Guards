@@ -30,6 +30,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.bxbservers.Guards.commands.CommandManager;
+import com.bxbservers.Guards.listeners.ListenerManager;
 import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -41,6 +42,7 @@ implements Listener
 
 public List<String> onDuty;
 public CommandManager cmdManager;
+public ListenerManager ListenerManager;
 public static Economy econ = null;
 public static Permission perms = null;
 public List<String> help;
@@ -77,6 +79,7 @@ if (!setupEconomy() ) {
             return;
         }
 cmdManager = new CommandManager(this);
+ListenerManager = new ListenerManager(this);
 logger = getLogger();
 configFile = getConfig();
 configFile.options().copyDefaults(true);
@@ -90,6 +93,8 @@ getLogger().info("Guards has been Enabled");
 
 listener = new GuardsListener(this);
 getServer().getPluginManager().registerEvents(listener, this);
+
+ListenerManager.initListeners();
 
 cmdManager.initCommands();
         
