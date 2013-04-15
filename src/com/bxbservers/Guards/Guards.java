@@ -14,8 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -30,7 +28,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
 
 import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
@@ -94,6 +91,7 @@ implements Listener
 
 		getCommand("duty").setExecutor(new DutyCommand(this));
 		getCommand("promoteGuard").setExecutor(new PromoteCommand(this));
+		getCommand("kit").setExecutor(new KitCommand(this));
         
         Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
         if (jailPlugin != null)
@@ -126,26 +124,7 @@ implements Listener
 	      return perms != null;
 	 }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 
-
-    		if (cmd.getName().equalsIgnoreCase("kit")){ 
-    			if (!(sender instanceof Player)) {
-    				sender.sendMessage("This command can Only be run by a player");
-    				return false;
-    			} else {
-    				Player player = (Player) sender;
-    				if (perms.has(player, "guards.kit")) {
-    				this.giveKit(player);
-    				player.sendMessage(prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
-    				return true;
-    			}
-    		}
-    	}
-    	
-    	return false;
-    	
-    }
 
 	public ItemStack setColor(ItemStack item, int color) {
 /*CraftItemStack craftStack = null;
