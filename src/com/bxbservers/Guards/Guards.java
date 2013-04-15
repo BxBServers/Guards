@@ -124,7 +124,90 @@ implements Listener
 	      return perms != null;
 	 }
 
+		public void givePotionEffect (Player player, String name, int duration, int potency){
 
+			switch (name.toLowerCase())
+			{
+			case "blindness":
+			potion = PotionEffectType.BLINDNESS;
+			break;
+			case "confusion":
+			potion = PotionEffectType.CONFUSION;
+			break;
+			case "damage_resistance":
+			potion = PotionEffectType.DAMAGE_RESISTANCE;
+			break;
+			case "fast_digging":
+			potion = PotionEffectType.FAST_DIGGING;
+			break;
+			case "fire_resistance":
+			potion = PotionEffectType.FIRE_RESISTANCE;
+			break;
+			case "harm":
+			potion = PotionEffectType.HARM;
+			break;
+			case "heal":
+			potion = PotionEffectType.HEAL;
+			break;
+			case "hunger":
+			potion = PotionEffectType.HUNGER;
+			break;
+			case "jump":
+			potion = PotionEffectType.JUMP;
+			break;
+			case "poison":
+			potion = PotionEffectType.POISON;
+			break;
+			case "regenration":
+			potion = PotionEffectType.REGENERATION;
+			break;
+			case "slow":
+			potion = PotionEffectType.SLOW;
+			break;
+			case "speed":
+			potion = PotionEffectType.SPEED;
+			break;
+			case "increased_damage":
+			potion = PotionEffectType.INCREASE_DAMAGE;
+			break;
+			case "water_breathing":
+			potion = PotionEffectType.WATER_BREATHING;
+			break;
+			case "weakness":
+			potion = PotionEffectType.WEAKNESS;
+			break;
+			case "wither":
+			potion = PotionEffectType.WITHER;
+			break;
+			case "invisibility":
+			potion = PotionEffectType.INVISIBILITY;
+			break;
+			case "night_vision":
+			potion = PotionEffectType.NIGHT_VISION;
+			break;
+			default:
+			potion = null;
+			break;
+			}
+
+		    if (potion != null) {
+		    	player.addPotionEffect(new PotionEffect(potion,duration,potency));
+		    }
+		}
+		
+		public void kitPotionEffect(Player player){
+			List<String> listPotions;
+			listPotions = getConfig().getStringList("kits.Guard.potions");
+			//logger.info(listPotions.get(1));
+			int n = listPotions.size() -1;
+			int i;
+			for(i=0; i<=n ; i++) {
+				String data = listPotions.get(i);
+				String[] potion =data.split(":");
+				givePotionEffect(player, potion[0], Integer.MAX_VALUE, Integer.parseInt(potion[1]));
+			}
+			
+		}
 
 	public ItemStack setColor(ItemStack item, int color) {
 /*CraftItemStack craftStack = null;
@@ -469,160 +552,10 @@ return item;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s);
 		}
 
-		}
-		//End of Armour
-
-		//Start of Potion
-		List<String> listPotions;
-		listPotions = getConfig().getStringList("kits.Guard.potions");
-		//logger.info(listPotions.get(1));
-		int n = listPotions.size() -1;
-		int i;
-		for(i=0; i<=n ; i++) {
-			String data = listPotions.get(i);
-			String[] Potion = data.split(":");
-			//logger.info(Potion[0]);
-			//logger.info(Potion[1]);
-			//logger.info("PotionEffectType."+Potion[0]);
-
-			@SuppressWarnings("unused")
-			String baseName = "null";
-
-			switch (Potion[0].toLowerCase())
-			{
-			case "blindness":
-			case "blind":
-			potion = PotionEffectType.BLINDNESS;
-			baseName = "blindness";
-			break;
-			case "nausea":
-			case "confuse":
-			case "confusion":
-			potion = PotionEffectType.CONFUSION;
-			baseName = "confusion";
-			break;
-			case "dmgresist":
-			case "dr":
-			case "damage_resistance":
-			potion = PotionEffectType.DAMAGE_RESISTANCE;
-			baseName = "damageresistance";
-			break;
-			case "haste":
-			case "dig":
-			case "fastdig":
-			case "digspeed":
-			potion = PotionEffectType.FAST_DIGGING;
-			baseName = "haste";
-			break;
-			case "fire":
-			case "fireresistance":
-			case "fr":
-			potion = PotionEffectType.FIRE_RESISTANCE;
-			baseName = "fireresistance";
-			break;
-			case "harm":
-			case "harming":
-			case "hurt":
-			potion = PotionEffectType.HARM;
-			baseName = "harming";
-			break;
-			case "heal":
-			case "healing":
-			case "health":
-			potion = PotionEffectType.HEAL;
-			baseName = "healing";
-			break;
-			case "hunger":
-			case "hungry":
-			case "food":
-			potion = PotionEffectType.HUNGER;
-			baseName = "hunger";
-			break;
-			case "jump":
-			case "highjump":
-			case "jumpboost":
-			potion = PotionEffectType.JUMP;
-			baseName = "jumpboost";
-			break;
-			case "poison":
-			potion = PotionEffectType.POISON;
-			baseName = "poison";
-			break;
-			case "regen":
-			case "regenration":
-			potion = PotionEffectType.REGENERATION;
-			baseName = "regeneration";
-			break;
-			case "slow":
-			case "slowness":
-			potion = PotionEffectType.SLOW;
-			baseName = "slowness";
-			break;
-			case "speed":
-			case "quick":
-			case "swift":
-			case "swiftness":
-			potion = PotionEffectType.SPEED;
-			baseName = "swiftness";
-			break;
-			case "increaseddamage":
-			case "damage":
-			case "strong":
-			case "strength":
-			potion = PotionEffectType.INCREASE_DAMAGE;
-			baseName = "strength";
-			break;
-			case "waterbreathing":
-			case "breathing":
-			potion = PotionEffectType.WATER_BREATHING;
-			baseName = "waterbreathing";
-			break;
-			case "weak":
-			case "weakness":
-			potion = PotionEffectType.WEAKNESS;
-			baseName = "weakness";
-			break;
-			case "scare":
-			case "freakout":
-			potion = PotionEffectType.SLOW;
-			baseName = "scare";
-			break;
-			case "flicker":
-			case "dim":
-			potion = PotionEffectType.BLINDNESS;
-			baseName = "flicker";
-			break;
-			case "wither":
-			case "witherboss":
-			potion = PotionEffectType.WITHER;
-			baseName = "wither";
-			break; // TODO: 1.4
-			case "invisible":
-			case "invisibility":
-			potion = PotionEffectType.INVISIBILITY;
-			baseName = "invisibility";
-			break; // TODO: 1.4
-			case "nightvision":
-			case "nv":
-			potion = PotionEffectType.NIGHT_VISION;
-			baseName = "nightvision";
-			break; // TODO: 1.4
-			default:
-			potion = null;
-			break;
-			}
-
-		    if (potion != null) {
-		    	player.addPotionEffect(new PotionEffect(potion,Integer.MAX_VALUE,Integer.parseInt(Potion[1])));
-		    }
-		}
-	//	String[] data = listPotions.toArray(new String[listPotions.size()]);
 	}
-
-
-
-
-
+	//End of Armour
+}
+	
     //Method from http://wiki.bukkit.org/Configuration_API_Reference
     public void reloadCustomConfig() {
         if (customConfigFile == null) {
