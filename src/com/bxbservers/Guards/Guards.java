@@ -114,6 +114,7 @@ public void onEnable() {
         }
     else {
     	TagAPIEnabled=false;
+    	logger.severe("TagAPI Not Found. Disabling dependant sections.");
         }
 }
 

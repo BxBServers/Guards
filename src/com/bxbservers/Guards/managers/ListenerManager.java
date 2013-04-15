@@ -31,9 +31,7 @@ public class ListenerManager {
 				
 		if (plugin.TagAPIEnabled) {
 			plugin.getServer().getPluginManager().registerEvents(tag, plugin);
-		} else {
-			plugin.logger.severe("TagAPI Not Found. Disabling dependant sections.");
-		}
+		} 
 	}
 	
 }
