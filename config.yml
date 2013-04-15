@@ -1,22 +1,32 @@
+#If DropGuardHeads is true the guards head will be dropped when they are killed by a player
 dropGuardHeads: true
+#If DropPlayerHeads is true the players head will be dropped when they are killed by a player
 dropPlayerHeads: true
+#playerHeadFrequency is the chance of the head dropping ie 10 is a 1 in 10 chance of head dropping
 playerHeadFrequency: 10
+#This is the string that should be used at the top of a kit sign
 kitSignHeader: [Armoury]
+#This is the money given to the player when they kill a guard
 moneyOnGuardKill: 1000
+#Additional Kits not supported.
 kits:
   Guard:
+    # potion effects to be applied on kit give
     potions:
       - SPEED:0
       - DAMAGE_RESISTANCE:1
     items:
+      #Options for armour leather,chainmail,iron,diamond
       helmet: chainmail
       chestplate: chainmail
       leggings: chainmail
       boots: chainmail
+      #use format EnchantId:EnchantStrength
       helmetEnchant: '0:20 1:10 34:10'
       chestplateEnchant: '0:20 1:10 34:10'
       leggingsEnchant: '0:20 1:10 34:10'
       bootsEnchant: '0:20 1:10 34:10'
+      # Set Items for item slots 1 to 35 use format ItemId:Quantity:DamageValue EnchantId:EnchantStrength
       '0': '276 16:8 34:4'
       '1': '261 48:4 51:1 50:2 49:2'
       '2': '397:1:1 19:30'
@@ -53,10 +63,12 @@ kits:
       '33': '0'
       '34': '0'
       '35': '0'
+      #Will set the names of the item <username> will set to the players username
       names:
         '9': '<username>'
         '2': 'Baton'
         '3': 'PepperSpray'
         '4': 'HandCuffs'
         '5': 'Radio'
+#List of Players marked as onDuty DO NOT TOUCH
 onDuty:
