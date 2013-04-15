@@ -136,17 +136,6 @@ public class GuardsListener implements Listener{
     				player.setHealth(player.getHealth() + player.getLastDamage());
     				}
     			}
-    			if (plugin.onDuty.contains((attacker.getName())) && (i==(384))) {
-    				attacker.sendMessage(plugin.prefix+"Player Jailed");
-    			    String playerName = player.getName();
-    			    int time = 18;
-    			    String reason = "3 min Default Jail";
-    			    plugin.jail.jailPlayer(playerName, time, null, reason);
-    			    plugin.jail.getPrisoner(player.getName());
-
-                    //plugin.jail.jailPlayer(playerName, time, null, reason);
-    			        return;
-    			}
         	
         	} 
         } else if(event.getDamager() instanceof Projectile){
