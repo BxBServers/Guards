@@ -1,6 +1,6 @@
 name: Guards
 main: com.bxbservers.Guards.Guards
-version: 1.0
+version: 1.0.1
 commands:
    duty:
       description: This Command toggles on duty Status.
