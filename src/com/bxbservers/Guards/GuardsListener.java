@@ -9,9 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
-import org.bukkit.World;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -28,14 +26,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
-import com.matejdro.bukkit.jail.JailPrisoner;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -160,11 +155,7 @@ public class GuardsListener implements Listener{
 				int x = user.getLocation().getBlockX();
 				int y = user.getLocation().getBlockY();
 				int z = user.getLocation().getBlockZ();
-				//user.sendMessage(String.valueOf(all.length));
-				//user.sendMessage(all[0].getName());
-				//user.sendMessage(all[1].getName());
-				int j;
-	        	for(Player all: plugin.getServer().getOnlinePlayers()) {
+				for(Player all: plugin.getServer().getOnlinePlayers()) {
 	        		if (all != player && plugin.onDuty.contains(all.getName())){
 	        			if (!(regions.isEmpty())){
 	        			all.sendMessage(plugin.prefix + "Guard " + player.getName() + " needs help at " + regions.get(0));
@@ -227,7 +218,7 @@ public class GuardsListener implements Listener{
     			    int time = 18;
     			    String reason = "3 min Default Jail";
     			    plugin.jail.jailPlayer(playerName, time, null, reason);
-    			    JailPrisoner prisoner = plugin.jail.getPrisoner(player.getName());
+    			    plugin.jail.getPrisoner(player.getName());
 
                     //plugin.jail.jailPlayer(playerName, time, null, reason);
     			        return;
@@ -299,7 +290,7 @@ public class GuardsListener implements Listener{
         }
 	}
 	
-	@SuppressWarnings("incomplete-switch")
+	@SuppressWarnings({ "incomplete-switch", "static-access" })
 	@EventHandler
 	public void onDeath(EntityDeathEvent e) {		
 		Player killer = e.getEntity().getKiller();

@@ -38,7 +38,6 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
-import com.matejdro.bukkit.*;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 
@@ -171,7 +170,6 @@ implements Listener
     			return false;
     		} else {
     			Player player = (Player) sender;
-    			String name = player.getName();
     			if (args.length != 1) {
     		           return false;
     		        }
@@ -222,6 +220,7 @@ item.setItemMeta(im);
 return item;
 }
 
+	@SuppressWarnings("deprecation")
 	public void giveKit(Player player) {
 
 		this.help.remove(player.getName());
@@ -253,7 +252,6 @@ return item;
 			}
 
 			if (this.getConfig().contains("kits." + className + ".items" + ".names." + slot) ) {
-				List<String> lore = null;
 			//get item name
 			String name = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("kits." + className + ".items" + ".names." + slot));
 			if (name.equalsIgnoreCase("<username>")){
@@ -556,6 +554,7 @@ return item;
 			//logger.info(Potion[1]);
 			//logger.info("PotionEffectType."+Potion[0]);
 
+			@SuppressWarnings("unused")
 			String baseName = "null";
 			
 			switch (Potion[0].toLowerCase())
@@ -728,6 +727,7 @@ return item;
 	
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setOffDuty(Player player, Boolean silent){
 		
 		TagAPI.refreshPlayer(player);
