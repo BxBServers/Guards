@@ -10,9 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.kitteh.tag.TagAPI;
 
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 public class DutyCommand implements CommandExecutor{
 
 	private Guards plugin;
@@ -24,29 +21,28 @@ public class DutyCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	if(cmd.getName().equalsIgnoreCase("duty")){
-    		// If the player typed /basic then do the following...
-    		if (!(sender instanceof Player)) {
+    		if (!(sender instanceof Player)) { //if not sent by player fail
     			sender.sendMessage("This command can Only be run by a player");
     			return false;
     		} else {   
-        		if (args.length == 1) {
-        			if (args[0].equalsIgnoreCase("silent")) {
-        				if (sender.hasPermission("guards.duty.silent")){
-        					plugin.silent=true;
-        					//logger.info("Silently going on duty");
+        		if (args.length == 1) { //if has arguement
+        			if (args[0].equalsIgnoreCase("silent")) { //check arguement is silent
+        				if (sender.hasPermission("guards.duty.silent")){ //if user has permission
+        					plugin.silent=true; //set silent to true
         				}
         			}
         		}
-    			Player player = (Player) sender;
-    			String name = player.getName();
-    			if (player.hasPermission("guards.duty")) {
-    				if (!plugin.onDuty.contains(name)) {
-    		              setOnDuty(player, plugin.silent);
-    		              plugin.onDuty.add(name);
+        		//If there is no arguement
+    			Player player = (Player) sender; //cast sender to player 
+    			String name = player.getName(); //get player name
+    			if (player.hasPermission("guards.duty")) { //if player has perms
+    				if (!plugin.onDuty.contains(name)) { //If they are not on duty
+    		              setOnDuty(player, plugin.silent); //set onduty
+    		              plugin.onDuty.add(name); //add to list
     		              return true;
-    		            } else if (plugin.onDuty.contains(name)) {
-    		              setOffDuty(player, plugin.silent);
-    		              plugin.onDuty.remove(name);
+    		            } else if (plugin.onDuty.contains(name)) { //if they are on duty
+    		              setOffDuty(player, plugin.silent); //set off Duty
+    		              plugin.onDuty.remove(name); //remove name from list
     		              return true;
     		            }
     				}
@@ -57,7 +53,8 @@ public class DutyCommand implements CommandExecutor{
 	
 	private void setOnDuty(Player player, Boolean silent){
 		
-		TagAPI.refreshPlayer(player);
+		TagAPI.refreshPlayer(player); //refresh players tag. Makes it go red
+		
 		//Save Inventory Section
         plugin.getCustomConfig().set(player.getName() + ".inventory", player.getInventory().getContents());
         plugin.getCustomConfig().set(player.getName() + ".armor", player.getInventory().getArmorContents());
@@ -68,18 +65,23 @@ public class DutyCommand implements CommandExecutor{
 		player.getInventory().setArmorContents(null);
 		for (PotionEffect effect : player.getActivePotionEffects())
 	        player.removePotionEffect(effect.getType());
-        
+        //End of Section
+		
+		
         //Give Kit
 		plugin.giveKit(player);
+		plugin.kitPotionEffect(player);
 		player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
+        //End of Section
         
         //Set Perm Group
-        PermissionUser user = PermissionsEx.getUser(player);
-        user.addGroup("Guard");
+        Guards.perms.playerAddGroup(player, "Guard");
+        //End of Section
         
         //Announce
         if (silent) {
             player.sendMessage(plugin.prefix+"You Silently come on duty");
+			plugin.silent =false;
         } else {
         	player.sendMessage(plugin.prefix+"You are now on Duty");
         	for(Player all: plugin.getServer().getOnlinePlayers()) {
@@ -88,18 +90,20 @@ public class DutyCommand implements CommandExecutor{
         		}
         	}
 		}
+        //End of Section
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setOffDuty(Player player, Boolean silent){
 		
-		TagAPI.refreshPlayer(player);
+		TagAPI.refreshPlayer(player); //refresh players tag. Makes it go red.
 		
 		//Clear Inventory and Potion Effects
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		for (PotionEffect effect : player.getActivePotionEffects())
 	        player.removePotionEffect(effect.getType());
+        //End of Section
 		
 		//Load Inventory Section
 		Object a = plugin.getCustomConfig().get(player.getName() + ".inventory");
@@ -129,12 +133,13 @@ public class DutyCommand implements CommandExecutor{
         //End of Section
         
 		//Set Perm Group
-        PermissionUser user = PermissionsEx.getUser(player);
-        user.removeGroup("Guard");
+        Guards.perms.playerRemoveGroup(player, "guard");
+        //End of Section
 		
 		//Announce
         if (silent) {
             player.sendMessage(plugin.prefix+"You Silently come off duty");
+			plugin.silent =false;
         } else {
         	player.sendMessage(plugin.prefix+"You are now off Duty");
         	for(Player all: plugin.getServer().getOnlinePlayers()) {
@@ -143,6 +148,7 @@ public class DutyCommand implements CommandExecutor{
         		}
         	}
 		}
+        //End of Section
 	}
 	
 	

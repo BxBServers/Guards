@@ -17,20 +17,20 @@ public class KitCommand implements CommandExecutor{
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 	
     	if (cmd.getName().equalsIgnoreCase("kit")){ 
-			if (!(sender instanceof Player)) {
+			if (!(sender instanceof Player)) { // If sender isn't a player fail
 				sender.sendMessage("This command can Only be run by a player");
 				return false;
 			} else {
-				Player player = (Player) sender;
-				if (Guards.perms.has(player, "guards.kit")) {
-					player.getInventory().clear();
-					player.getInventory().setArmorContents(null);
-					for (PotionEffect effect : player.getActivePotionEffects()) {
+				Player player = (Player) sender; //cast sender to player
+				if (Guards.perms.has(player, "guards.kit")) { //if player has perms
+					player.getInventory().clear(); //clear inventory
+					player.getInventory().setArmorContents(null); //clear armour
+					for (PotionEffect effect : player.getActivePotionEffects()) { //remove all potion effects
 				        player.removePotionEffect(effect.getType());
 					}
-					plugin.giveKit(player);
-					plugin.kitPotionEffect(player);
-					player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
+					plugin.giveKit(player); //give kit
+					plugin.kitPotionEffect(player); //give Potion effects
+					player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock"); //send Confirmation
 					return true;
 				}
 			}
