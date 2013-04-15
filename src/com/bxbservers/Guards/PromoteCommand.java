@@ -1,6 +1,7 @@
 package com.bxbservers.Guards;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,12 @@ public class PromoteCommand implements CommandExecutor {
     		        }
     			if (Guards.perms.has(player, "guards.guard")) {
     				Player target = (Bukkit.getServer().getPlayer(args[0]));
-    				Guards.perms.playerAdd(target, "guards.duty");
+    				if (target == null) {
+    					OfflinePlayer offlineTarget = Bukkit.getServer().getOfflinePlayer(args[0]);
+    					player.sendMessage(plugin.prefix + " Error " + offlineTarget.getName() + " if offline.");
+    				} else {
+    					Guards.perms.playerAdd(target, "guards.duty");
+    				}
     				target.sendMessage(plugin.prefix + "Congratulations on promotion to guard");
     				player.sendMessage(plugin.prefix + target.getName()+" has been promoted");
     				return true;
