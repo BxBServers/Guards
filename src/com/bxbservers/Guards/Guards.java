@@ -80,6 +80,7 @@ implements Listener
 	@Override
 	public void onEnable() {
 
+		
 		plugin = this;
 		CmdManager = new CommandManager(this);		
 		
