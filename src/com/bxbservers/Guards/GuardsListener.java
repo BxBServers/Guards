@@ -45,23 +45,7 @@ public class GuardsListener implements Listener{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler
-	public void onClick(InventoryClickEvent e){
-	    if(e.getWhoClicked() instanceof Player){
-	        Player player = (Player) e.getWhoClicked(); 
-	        if (player.getGameMode()== GameMode.CREATIVE){
-	        	return;
-	        }
-	        String name = player.getName();
-	        if (plugin.onDuty.contains(name)) {
-	        	e.setCancelled(true);
-	        	e.setCursor(new ItemStack(Material.AIR));
-	        	player.closeInventory();
-	        	player.sendMessage(plugin.prefix +"You Cannot use your Inventory while on Duty");
-	        }
-	    }
-	}
-	
+
 
 	
 	@EventHandler
@@ -72,7 +56,7 @@ public class GuardsListener implements Listener{
 			if (stack.getTypeId()==397 || stack.getTypeId() == 384 ){
 				e.setCancelled(true);
 				stack.setAmount(1);
-				player.getInventory().addItem(stack);
+				player.getInventory().setItemInHand(stack);
 				return;
 			}
 				
@@ -200,121 +184,7 @@ public class GuardsListener implements Listener{
         
 	
 	
-	@EventHandler
-	public void onBreak(BlockBreakEvent e){
-		Player player = e.getPlayer();    
-		String name = player.getName();
-	        if (plugin.onDuty.contains(name)) {
-	        	e.setCancelled(true);
-	        	player.sendMessage(plugin.prefix +"You Cannot Break Blocks while on Duty");
-	        }
-	}
-	
-	
-	@EventHandler
-	public void onDrop(PlayerDropItemEvent e){
-	    Player player = e.getPlayer();    
-		String name = player.getName();
-	        if (plugin.onDuty.contains(name)) {
-	        		if (!(e.getItemDrop().getEntityId() == 144)){
-	        				e.setCancelled(true);
-	        				player.sendMessage(plugin.prefix +"You Cannot Drop Items while on Duty");
-	        		}
-	        }
-	}
-	
-	@EventHandler
-	public void onPickup(PlayerPickupItemEvent e){
-		Player player = e.getPlayer();    
-		String name = player.getName();
-	        if (plugin.onDuty.contains(name)) {
-   				e.setCancelled(true);
-	        }
-	        
-	}
-		
-	@EventHandler
-	public void death(PlayerDeathEvent e){
-			e.setDeathMessage("");
-	}
-	
-	@EventHandler
-	public void onRespawn(PlayerRespawnEvent e){
-		Player player = e.getPlayer();
-		if (plugin.onDuty.contains(player.getName())) {
-				plugin.giveKit(player);
-				player.sendMessage(plugin.prefix +"You have received a new kit. Don't Lose it again");
-        }
-	}
-	
-	@SuppressWarnings({ "incomplete-switch", "static-access" })
-	@EventHandler
-	public void onDeath(EntityDeathEvent e) {		
-		Player killer = e.getEntity().getKiller();
-		if (killer == null) {
-			switch (e.getEntityType()) {
-			case PLAYER:
-				Player victim = (Player)e.getEntity();
-				if (plugin.onDuty.contains(victim.getName())) {
-					e.getDrops().clear();
-				}
-			}
-			return;
-		}
-		switch (e.getEntityType()) {
-		case PLAYER:
-			Player victim = (Player)e.getEntity();
-			if (plugin.onDuty.contains(victim.getName())) {
-				e.getDrops().clear();
-				if (plugin.getConfig().getBoolean("dropGuardHeads")) {
-					plugin.logger.info("Head Dropping Enabled");
-					ItemStack Skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
-					SkullMeta skullMeta = (SkullMeta)Skull.getItemMeta();
-					skullMeta.setOwner(victim.getName());
-					Skull.setItemMeta(skullMeta);
-					e.getDrops().add(Skull);
-					
-		            EconomyResponse r = plugin.econ.depositPlayer(killer.getName(), plugin.getConfig().getInt("moneyOnGuardKill"));
-		            if(r.transactionSuccess()) {
-		               killer.sendMessage(String.format("You were rewarded %s for killing a guard", plugin.econ.format(r.amount)));
-		            } else {
-		                killer.sendMessage(String.format("An error occured: %s", r.errorMessage));
-		            }
-					
-					for(Player user: plugin.getServer().getOnlinePlayers()) {
-						if (!(plugin.onDuty.contains(user.getName()))) {
-							user.sendMessage(plugin.prefix +killer.getName() + " has just killed guard " + victim.getName());
-						}
-						
-					}
-					return;
-				} else {
-					plugin.logger.info("Head Dropping Disabled");
-				}		
-			}
-			if(plugin.onDuty.contains(killer.getName())) {
-				e.getDrops().clear();
-				return;
-			}
-			
-			int n = plugin.getConfig().getInt("playerHeadFrequency");
-			int rand = generator.nextInt(n);
-			plugin.logger.info(Integer.toString(rand));
-			if (rand==0){
-				if (plugin.getConfig().getBoolean("dropPlayerHeads")) {
-					plugin.logger.info("Head Dropping Enabled");
-					ItemStack Skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
-					SkullMeta skullMeta = (SkullMeta)Skull.getItemMeta();
-					skullMeta.setOwner(victim.getName());
-					Skull.setItemMeta(skullMeta);
-					e.getDrops().add(Skull);
-				}
-			}
-					
-			
-		}
-		
-	}
+
 	
 
 }

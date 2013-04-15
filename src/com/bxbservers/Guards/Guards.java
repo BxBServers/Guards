@@ -56,6 +56,7 @@ private File customConfigFile = null;
 public JailAPI jail;
 public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
 public boolean TagAPIEnabled;
+public boolean JailAPIEnabled;
 
 public WorldGuardPlugin getWorldGuard() {
 Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -74,40 +75,45 @@ return (WorldGuardPlugin) WGplugin;
 @Override
 public void onEnable() {
 
-if (!setupEconomy() ) {
+	if (!setupEconomy() ) {
             logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-cmdManager = new CommandManager(this);
-ListenerManager = new ListenerManager(this);
-logger = getLogger();
-configFile = getConfig();
-configFile.options().copyDefaults(true);
-saveDefaultConfig();
-this.onDuty = getConfig().getStringList("onDuty");
-this.help = getConfig().getStringList("help");
-        reloadCustomConfig();
-        setupPermissions();
+	cmdManager = new CommandManager(this);
+	ListenerManager = new ListenerManager(this);
+	logger = getLogger();
+	configFile = getConfig();
+	configFile.options().copyDefaults(true);
+	saveDefaultConfig();
+	this.onDuty = getConfig().getStringList("onDuty");
+	this.help = getConfig().getStringList("help");
+    reloadCustomConfig();
+    setupPermissions();
+       
+    getLogger().info("Guards has been Enabled");
+
+    listener = new GuardsListener(this);
+    getServer().getPluginManager().registerEvents(listener, this);
+
+    ListenerManager.initListeners();
+
+    cmdManager.initCommands();
         
-getLogger().info("Guards has been Enabled");
-
-listener = new GuardsListener(this);
-getServer().getPluginManager().registerEvents(listener, this);
-
-ListenerManager.initListeners();
-
-cmdManager.initCommands();
-        
-        Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
-        if (jailPlugin != null)
-        {
+    Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
+    if (jailPlugin != null){
             jail = ((Jail) jailPlugin).API;
+            JailAPIEnabled=true;
         }
-        else
-        {
-            //Code here will run if player don't have Jail installed.
-            //Use that to disable features of your plugin that include Jail to prevent errors.
+    else {
+    	JailAPIEnabled=false;
+        }
+    Plugin TagAPIPlugin = getServer().getPluginManager().getPlugin("TagAPI");
+    if (TagAPIPlugin != null){
+            TagAPIEnabled=true;
+        }
+    else {
+    	TagAPIEnabled=false;
         }
 }
 

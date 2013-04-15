@@ -1,6 +1,8 @@
 package com.bxbservers.Guards.managers;
 
 import com.bxbservers.Guards.Guards;
+import com.bxbservers.Guards.listeners.DeathListener;
+import com.bxbservers.Guards.listeners.DisableGuardEventsListener;
 import com.bxbservers.Guards.listeners.SignListener;
 import com.bxbservers.Guards.listeners.TagAPIListener;
 
@@ -10,24 +12,27 @@ public class ListenerManager {
 	
 	private SignListener signs;
 	private TagAPIListener tag;
+	private DeathListener death;
+	private DisableGuardEventsListener guard;
 	
 	public ListenerManager(Guards instance){
 		plugin = instance;
 		
+		guard = new DisableGuardEventsListener(plugin);
 		signs = new SignListener(plugin);
 		tag = new TagAPIListener(plugin);
+		death = new DeathListener(plugin);
 	}
 	
 	public void initListeners() {
 		plugin.getServer().getPluginManager().registerEvents(signs, plugin);
-		
-		
-		if (plugin.getServer().getPluginManager().isPluginEnabled("TagAPI")) {
+		plugin.getServer().getPluginManager().registerEvents(death, plugin);
+		plugin.getServer().getPluginManager().registerEvents(guard, plugin);
+				
+		if (plugin.TagAPIEnabled) {
 			plugin.getServer().getPluginManager().registerEvents(tag, plugin);
-			plugin.TagAPIEnabled = true;
 		} else {
 			plugin.logger.severe("TagAPI Not Found. Disabling dependant sections.");
-			plugin.TagAPIEnabled = false;
 		}
 	}
 	
