@@ -1,11 +1,15 @@
 package com.bxbservers.Guards;
 
+import java.util.LinkedList;
 import java.util.Random;
+
+import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -24,10 +28,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
+
+import com.matejdro.bukkit.jail.JailPrisoner;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class GuardsListener implements Listener{
 
@@ -102,6 +113,79 @@ public class GuardsListener implements Listener{
 	}
 	
 	@EventHandler
+	public void equipmentClick(PlayerInteractEvent e) {
+		Player player = e.getPlayer();
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+			ItemStack stack = player.getItemInHand();
+			if (stack.getTypeId()==397 || stack.getTypeId() == 384 ){
+				e.setCancelled(true);
+				stack.setAmount(1);
+				player.getInventory().addItem(stack);
+				return;
+			}
+				
+			
+		}
+		Player user = e.getPlayer();
+		ItemStack stack =  user.getItemInHand();
+		int i = stack.getTypeId();
+		int d = stack.getDurability();
+		if (plugin.onDuty.contains((user.getName())) && (i==(397)) && d==0) {
+			if (e.getAction()==Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK){
+				if (!(plugin.help.contains(user.getName()))){
+				user.sendMessage(plugin.prefix+"Help Summoned");
+				plugin.help.add(user.getName());
+				
+				RegionManager regionManager = plugin.getWorldGuard().getRegionManager(player.getWorld());
+				ApplicableRegionSet set = regionManager.getApplicableRegions(player.getLocation());
+				
+				LinkedList< String > parentNames = new LinkedList< String >();
+				LinkedList< String > regions = new LinkedList< String >();
+				
+				for ( ProtectedRegion region : set ){
+					regions.add(region.getId());
+					ProtectedRegion parent = region.getParent();
+					
+					while ( parent != null ) {
+						parentNames.add( parent.getId());
+						parent = parent.getParent();
+					}
+				}
+				
+				for ( String name : parentNames )
+					regions.remove( name );
+					
+				
+				
+				int x = user.getLocation().getBlockX();
+				int y = user.getLocation().getBlockY();
+				int z = user.getLocation().getBlockZ();
+				//user.sendMessage(String.valueOf(all.length));
+				//user.sendMessage(all[0].getName());
+				//user.sendMessage(all[1].getName());
+				int j;
+	        	for(Player all: plugin.getServer().getOnlinePlayers()) {
+	        		if (all != player && plugin.onDuty.contains(all.getName())){
+	        			if (!(regions.isEmpty())){
+	        			all.sendMessage(plugin.prefix + "Guard " + player.getName() + " needs help at " + regions.get(0));
+	        			} else {
+	        				all.sendMessage(plugin.prefix + "Guard " + player.getName() + " needs help at " + x +","+y+","+z);
+	        			}
+	        		}
+	        	}
+					
+				} else {
+					user.sendMessage(plugin.prefix+"You can only do this once per Life");
+				}
+			}
+				
+		}
+	}
+	
+	
+	
+	@SuppressWarnings({ "incomplete-switch", "deprecation" })
+	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
@@ -118,7 +202,13 @@ public class GuardsListener implements Listener{
     			}
     			ItemStack stack =  attacker.getItemInHand();
     			int i = stack.getTypeId();
-    			if (plugin.onDuty.contains((attacker.getName())) && (i==(294))) {
+    			int d = stack.getDurability();
+    			/*
+    			if (i==397){
+    				attacker.sendMessage("Durability is "+String.valueOf(d));
+    			}
+    			*/
+    			if (plugin.onDuty.contains((attacker.getName())) && (i==(397)) && d==4) {
     				//attacker.sendMessage("Hit wih hoe");
     				
     				if ((player.getHealth() + player.getLastDamage())<=20){
@@ -126,10 +216,21 @@ public class GuardsListener implements Listener{
     				}
     				player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS,300,0));
     			}
-    			if (plugin.onDuty.contains((attacker.getName())) && (i==(280))) {
+    			if (plugin.onDuty.contains((attacker.getName())) && (i==(397)) && d==1) {
     				if ((player.getHealth() + player.getLastDamage())<=20){
     				player.setHealth(player.getHealth() + player.getLastDamage());
     				}
+    			}
+    			if (plugin.onDuty.contains((attacker.getName())) && (i==(384))) {
+    				attacker.sendMessage(plugin.prefix+"Player Jailed");
+    			    String playerName = player.getName();
+    			    int time = 18;
+    			    String reason = "3 min Default Jail";
+    			    plugin.jail.jailPlayer(playerName, time, null, reason);
+    			    JailPrisoner prisoner = plugin.jail.getPrisoner(player.getName());
+
+                    //plugin.jail.jailPlayer(playerName, time, null, reason);
+    			        return;
     			}
         	
         	} 
@@ -203,6 +304,13 @@ public class GuardsListener implements Listener{
 	public void onDeath(EntityDeathEvent e) {		
 		Player killer = e.getEntity().getKiller();
 		if (killer == null) {
+			switch (e.getEntityType()) {
+			case PLAYER:
+				Player victim = (Player)e.getEntity();
+				if (plugin.onDuty.contains(victim.getName())) {
+					e.getDrops().clear();
+				}
+			}
 			return;
 		}
 		switch (e.getEntityType()) {
@@ -217,12 +325,21 @@ public class GuardsListener implements Listener{
 					skullMeta.setOwner(victim.getName());
 					Skull.setItemMeta(skullMeta);
 					e.getDrops().add(Skull);
+					
+		            EconomyResponse r = plugin.econ.depositPlayer(killer.getName(), plugin.getConfig().getInt("moneyOnGuardKill"));
+		            if(r.transactionSuccess()) {
+		               killer.sendMessage(String.format("You were rewarded %s for killing a guard", plugin.econ.format(r.amount)));
+		            } else {
+		                killer.sendMessage(String.format("An error occured: %s", r.errorMessage));
+		            }
+					
 					for(Player user: plugin.getServer().getOnlinePlayers()) {
 						if (!(plugin.onDuty.contains(user.getName()))) {
 							user.sendMessage(plugin.prefix +killer.getName() + " has just killed guard " + victim.getName());
 						}
-						return;
+						
 					}
+					return;
 				} else {
 					plugin.logger.info("Head Dropping Disabled");
 				}		

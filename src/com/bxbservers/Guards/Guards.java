@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -23,6 +25,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -32,22 +36,49 @@ import org.kitteh.tag.TagAPI;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
+import com.matejdro.bukkit.jail.Jail;
+import com.matejdro.bukkit.jail.JailAPI;
+import com.matejdro.bukkit.*;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
+
 public class Guards extends JavaPlugin
 implements Listener
 {
 	
 	  public List<String> onDuty;
+	  public static Economy econ = null;
+	  public List<String> help;
 	  public GuardsListener listener;
 	  public FileConfiguration configFile;
 	  public Logger logger;
 	  public PotionEffectType potion;
 	  private FileConfiguration customConfig = null;
 	  private File customConfigFile = null;
+	  public JailAPI jail;
 	  public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
-	
+	  public WorldGuardPlugin getWorldGuard() {
+		    Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
+		 
+		    // WorldGuard may not be loaded
+		    if (WGplugin == null || !(WGplugin instanceof WorldGuardPlugin)) {
+		        logger.info("WorldGuardError");
+		    	return null; // Maybe you want throw an exception instead
+
+		    }
+		 
+		    return (WorldGuardPlugin) WGplugin;
+		}
+	  
 	  
 	@Override
 	public void onEnable() {
+		
+		if (!setupEconomy() ) {
+            logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 		
 		logger = getLogger();
 		configFile = getConfig();
@@ -58,9 +89,34 @@ implements Listener
 		listener = new GuardsListener(this);
 		getServer().getPluginManager().registerEvents(listener, this);
 		this.onDuty = getConfig().getStringList("onDuty");
+		this.help = getConfig().getStringList("help");
         reloadCustomConfig();
+        
+        Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
+        if (jailPlugin != null)
+        {
+            jail = ((Jail) jailPlugin).API;
+        }
+        else
+        {
+            //Code here will run if player don't have Jail installed.
+            //Use that to disable features of your plugin that include Jail to prevent errors.
+        }
 	}
-	
+	 
+
+	 private boolean setupEconomy() {
+	        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+	            return false;
+	        }
+	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+	        if (rsp == null) {
+	            return false;
+	        }
+	        econ = rsp.getProvider();
+	        return econ != null;
+	    }
+
 
 	
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -167,6 +223,8 @@ return item;
 }
 
 	public void giveKit(Player player) {
+
+		this.help.remove(player.getName());
 		getLogger().info("Giving kit to " + player.getName());
 		int slot;
 		String className = "Guard";
@@ -198,14 +256,8 @@ return item;
 				List<String> lore = null;
 			//get item name
 			String name = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("kits." + className + ".items" + ".names." + slot));
-			this.getConfig().set("temp", name);
-			if (i.getTypeId()==262){
+			if (name.equalsIgnoreCase("<username>")){
 				name=player.getName();
-			} else if (i.getTypeId()== 280){
-				name="Baton";
-			} else if (i.getTypeId()==294){
-				name="Pepper Spray";
-				//lore.set(0, "Applys Blindness on attack.");
 			}
 			ItemMeta im = i.getItemMeta();
 			if (name.equals(ChatColor.RESET + "" + ChatColor.RESET)) {
@@ -769,6 +821,7 @@ return item;
 	@Override
 	public void onDisable() {
 	    getConfig().set("onDuty", this.onDuty);
+	    getConfig().set("help", this.help);
 	    saveConfig();
 		getLogger().info("Guards has been disabled");
 		saveCustomConfig();

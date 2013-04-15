@@ -2,11 +2,12 @@ dropGuardHeads: true
 dropPlayerHeads: true
 playerHeadFrequency: 10
 kitSignHeader: [Armoury]
+moneyOnGuardKill: 1000
 kits:
   Guard:
     potions:
       - SPEED:0
-      - DAMAGE_RESISTANCE:2
+      - DAMAGE_RESISTANCE:1
     items:
       helmet: chainmail
       chestplate: chainmail
@@ -18,11 +19,11 @@ kits:
       bootsEnchant: '0:20 1:10 34:10'
       '0': '276 16:8 34:4'
       '1': '261 48:4 51:1 50:2 49:2'
-      '2': '280 19:30'
-      '3': '294'
-      '4': '322:5:1'
-      '5': '0'
-      '6': '0'
+      '2': '397:1:1 19:30'
+      '3': '397:1:4'
+      '4': '384'
+      '5': '397'
+      '6': '322:5:1'
       '7': '0'
       '8': '0'
       '9': '262'
@@ -56,4 +57,6 @@ kits:
         '9': '<username>'
         '2': 'Baton'
         '3': 'PepperSpray'
+        '4': 'HandCuffs'
+        '5': 'Radio'
 onDuty:
