@@ -5,10 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -86,4 +88,19 @@ public class DisableGuardEventsListener implements Listener{
 	        
 	}
 	
+	//Stop Guards Right Clicking with Equipment
+	@EventHandler
+	public void equipmentClick(PlayerInteractEvent e) {
+		Player player = e.getPlayer();
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+			ItemStack stack = player.getItemInHand();
+			if (stack.getTypeId()==397 || stack.getTypeId() == 384 ){
+				e.setCancelled(true);
+				stack.setAmount(1);
+				player.getInventory().setItemInHand(stack);
+				return;
+			}
+	
+		}
+	}
 }

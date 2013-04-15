@@ -47,7 +47,6 @@ public static Economy econ = null;
 public static Permission perms = null;
 public List<String> help;
    public boolean silent = false;
-public GuardsListener listener;
 public FileConfiguration configFile;
 public Logger logger;
 public PotionEffectType potion;
@@ -57,20 +56,22 @@ public JailAPI jail;
 public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
 public boolean TagAPIEnabled;
 public boolean JailAPIEnabled;
+public boolean WorldGuardEnabled;
 
 public WorldGuardPlugin getWorldGuard() {
 Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
 
 // WorldGuard may not be loaded
 if (WGplugin == null || !(WGplugin instanceof WorldGuardPlugin)) {
-logger.info("WorldGuardError");
-return null; // Maybe you want throw an exception instead
-
+	logger.info("WorldGuardError");
+		WorldGuardEnabled=false;
+		logger.severe("WorldGuard not Found. Disabling dependant sections.");	
+} else {
+	WorldGuardEnabled=true;
 }
 
 return (WorldGuardPlugin) WGplugin;
 }
-
 
 @Override
 public void onEnable() {
@@ -93,12 +94,11 @@ public void onEnable() {
        
     getLogger().info("Guards has been Enabled");
 
-    listener = new GuardsListener(this);
-    getServer().getPluginManager().registerEvents(listener, this);
 
     ListenerManager.initListeners();
 
     cmdManager.initCommands();
+    getWorldGuard();
         
     Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
     if (jailPlugin != null){

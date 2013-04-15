@@ -30,7 +30,6 @@ public class HandcuffListener implements Listener {
     			Player player = (Player) event.getEntity();
     			ItemStack stack =  attacker.getItemInHand();
     			int i = stack.getTypeId();
-    			int d = stack.getDurability();
     			if (plugin.onDuty.contains((attacker.getName())) && (i==(384))) {
     				attacker.sendMessage(plugin.prefix+"Player Jailed");
     			    String playerName = player.getName();

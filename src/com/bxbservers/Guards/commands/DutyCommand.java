@@ -11,13 +11,11 @@ import org.bukkit.potion.PotionEffect;
 import org.kitteh.tag.TagAPI;
 
 import com.bxbservers.Guards.Guards;
-import com.bxbservers.Guards.GuardsListener;
 import com.bxbservers.Guards.managers.CommandManager;
 
 public class DutyCommand implements CommandExecutor{
 
 	  private Guards plugin;
-	  public GuardsListener listener;
 	  public CommandManager CmdManager;
 	  public KitCommand kit;
 	  public PromoteCommand promote;
