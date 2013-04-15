@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,9 +34,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import org.kitteh.tag.TagAPI;
 
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -44,9 +42,10 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 public class Guards extends JavaPlugin
 implements Listener
 {
-	
+
 	  public List<String> onDuty;
 	  public static Economy econ = null;
+	  public static Permission perms = null;
 	  public List<String> help;
   	  public boolean silent = false;
 	  public GuardsListener listener;
@@ -57,30 +56,30 @@ implements Listener
 	  private File customConfigFile = null;
 	  public JailAPI jail;
 	  public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
-	  
+
 	  public WorldGuardPlugin getWorldGuard() {
 		    Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
-		 
+
 		    // WorldGuard may not be loaded
 		    if (WGplugin == null || !(WGplugin instanceof WorldGuardPlugin)) {
 		        logger.info("WorldGuardError");
 		    	return null; // Maybe you want throw an exception instead
 
 		    }
-		 
+
 		    return (WorldGuardPlugin) WGplugin;
 		}
-	  
-	  
+
+
 	@Override
 	public void onEnable() {
-		
+
 		if (!setupEconomy() ) {
             logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-		
+
 		logger = getLogger();
 		configFile = getConfig();
 		configFile.options().copyDefaults(true);
@@ -88,12 +87,13 @@ implements Listener
 		this.onDuty = getConfig().getStringList("onDuty");
 		this.help = getConfig().getStringList("help");
         reloadCustomConfig();
-		
+        setupPermissions();
+        
 		getLogger().info("Guards has been Enabled");
-		
+
 		listener = new GuardsListener(this);
 		getServer().getPluginManager().registerEvents(listener, this);
-		
+
 		getCommand("duty").setExecutor(new DutyCommand(this));
         
         Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
@@ -107,7 +107,7 @@ implements Listener
             //Use that to disable features of your plugin that include Jail to prevent errors.
         }
 	}
-	 
+
 
 	 private boolean setupEconomy() {
 	        if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -119,10 +119,14 @@ implements Listener
 	        }
 	        econ = rsp.getProvider();
 	        return econ != null;
-	    }
+	 }
+	 
+	 private boolean setupPermissions() {
+	      RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+	      perms = rsp.getProvider();
+	      return perms != null;
+	 }
 
-
-	
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 
 
@@ -132,7 +136,7 @@ implements Listener
     				return false;
     			} else {
     				Player player = (Player) sender;
-    				if (player.hasPermission("guards.kit")) {
+    				if (perms.has(player, "guards.kit")) {
     				this.giveKit(player);
     				player.sendMessage(prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
     				return true;
@@ -148,28 +152,19 @@ implements Listener
     			if (args.length != 1) {
     		           return false;
     		        }
-    			if (player.hasPermission("guards.guard")) {
+    			if (perms.has(player, "guards.guard")) {
     				Player target = (Bukkit.getServer().getPlayer(args[0]));
-    				if (target == null) {
-    					OfflinePlayer offlineTarget = getServer().getOfflinePlayer(args[0]);
-    					//getServer().dispatchCommand(getServer().getConsoleSender(), "/pex user "+offlineTarget.getName()+" add guards.duty");
-    					player.chat("/pex user "+offlineTarget.getName()+" add guards.duty");
-    					player.sendMessage(offlineTarget.getName()+" has been promoted");
-    					return true;
-    				} else {
-    					PermissionUser user = PermissionsEx.getUser(target);
-    					user.addPermission("guards.duty");
-    					target.sendMessage(prefix + "Congratulations on promotion to guard");
-    					player.sendMessage(prefix + target.getName()+" has been promoted");
-    					return true;
-    				}
-    			}
+    				perms.playerAdd(target, "guards.duty");
+    				target.sendMessage(prefix + "Congratulations on promotion to guard");
+    				player.sendMessage(prefix + target.getName()+" has been promoted");
+    				return true;
+    			} 
     		}
        	}
     	return false;
     	
     }
-	
+
 	public ItemStack setColor(ItemStack item, int color) {
 /*CraftItemStack craftStack = null;
 net.minecraft.server.v1_4_5.ItemStack itemStack = null;
@@ -202,7 +197,7 @@ return item;
 		getLogger().info("Giving kit to " + player.getName());
 		int slot;
 		String className = "Guard";
-		
+
 		// Item Section
 		for (slot = 0; slot<=35; slot++) {
 			ItemStack i = new ItemStack(0);
@@ -262,7 +257,7 @@ return item;
 			}
 			}
 		// End of Item section
-		
+
 		//Sets the armor contents
 		String getHelmet = this.getConfig().getString("kits." + className + ".items" + ".helmet");
 		String getChestplate = this.getConfig().getString("kits." + className + ".items" + ".chestplate");
@@ -515,7 +510,7 @@ return item;
 
 		}
 		//End of Armour
-		
+
 		//Start of Potion
 		List<String> listPotions;
 		listPotions = getConfig().getStringList("kits.Guard.potions");
@@ -531,7 +526,7 @@ return item;
 
 			@SuppressWarnings("unused")
 			String baseName = "null";
-			
+
 			switch (Potion[0].toLowerCase())
 			{
 			case "blindness":
@@ -655,7 +650,7 @@ return item;
 			potion = null;
 			break;
 			}
-			
+
 		    if (potion != null) {
 		    	player.addPotionEffect(new PotionEffect(potion,Integer.MAX_VALUE,Integer.parseInt(Potion[1])));
 		    }
@@ -666,7 +661,7 @@ return item;
 
 
 
-	
+
     //Method from http://wiki.bukkit.org/Configuration_API_Reference
     public void reloadCustomConfig() {
         if (customConfigFile == null) {
@@ -711,18 +706,5 @@ return item;
 		getLogger().info("Guards has been disabled");
 		saveCustomConfig();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
