@@ -93,6 +93,7 @@ implements Listener
 		getServer().getPluginManager().registerEvents(listener, this);
 
 		getCommand("duty").setExecutor(new DutyCommand(this));
+		getCommand("promoteGuard").setExecutor(new PromoteCommand(this));
         
         Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
         if (jailPlugin != null)
@@ -141,24 +142,7 @@ implements Listener
     			}
     		}
     	}
-    	else if (cmd.getName().equalsIgnoreCase("guard")){
-    		if (!(sender instanceof Player)) {
-    			sender.sendMessage("This command can Only be run by a player");
-    			return false;
-    		} else {
-    			Player player = (Player) sender;
-    			if (args.length != 1) {
-    		           return false;
-    		        }
-    			if (perms.has(player, "guards.guard")) {
-    				Player target = (Bukkit.getServer().getPlayer(args[0]));
-    				perms.playerAdd(target, "guards.duty");
-    				target.sendMessage(prefix + "Congratulations on promotion to guard");
-    				player.sendMessage(prefix + target.getName()+" has been promoted");
-    				return true;
-    			} 
-    		}
-       	}
+    	
     	return false;
     	
     }

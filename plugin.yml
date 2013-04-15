@@ -12,8 +12,8 @@ commands:
       usage: /<command>
       permission: guards.kit
       permission-message: Visit the Guard room to refill Kit.
-   guard:
+   promoteGuard:
       description: This Command Promotes a Member to guard status.
       usage: /<command> <Username>
-      permission: guards.guard
+      permission: guards.promote
       permission-message: You do not have permission to do this.
