@@ -1,6 +1,9 @@
-package com.bxbservers.Guards.commands;
+package com.bxbservers.Guards.managers;
 
 import com.bxbservers.Guards.Guards;
+import com.bxbservers.Guards.commands.DutyCommand;
+import com.bxbservers.Guards.commands.KitCommand;
+import com.bxbservers.Guards.commands.PromoteCommand;
 
 public class CommandManager {
 	private Guards plugin;

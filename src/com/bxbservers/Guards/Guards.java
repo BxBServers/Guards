@@ -29,8 +29,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.bxbservers.Guards.commands.CommandManager;
-import com.bxbservers.Guards.listeners.ListenerManager;
+import com.bxbservers.Guards.managers.CommandManager;
+import com.bxbservers.Guards.managers.ListenerManager;
 import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
