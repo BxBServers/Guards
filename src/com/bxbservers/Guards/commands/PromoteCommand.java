@@ -1,10 +1,12 @@
-package com.bxbservers.Guards;
+package com.bxbservers.Guards.commands;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.bxbservers.Guards.Guards;
 
 public class PromoteCommand implements CommandExecutor {
 

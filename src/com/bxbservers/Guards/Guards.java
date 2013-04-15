@@ -33,17 +33,28 @@ import com.matejdro.bukkit.jail.Jail;
 import com.matejdro.bukkit.jail.JailAPI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
+import com.bxbservers.Guards.commands.CommandManager;
+import com.bxbservers.Guards.commands.DutyCommand;
+import com.bxbservers.Guards.commands.KitCommand;
+import com.bxbservers.Guards.commands.PromoteCommand;
+
 
 public class Guards extends JavaPlugin
 implements Listener
 {
 
+	  private static Guards plugin;
+	  public GuardsListener listener;
+	  public CommandManager CmdManager;
+	  public DutyCommand duty;
+	  public KitCommand kit;
+	  public PromoteCommand promote;
+	
 	  public List<String> onDuty;
 	  public static Economy econ = null;
 	  public static Permission perms = null;
 	  public List<String> help;
   	  public boolean silent = false;
-	  public GuardsListener listener;
 	  public FileConfiguration configFile;
 	  public Logger logger;
 	  public PotionEffectType potion;
@@ -69,6 +80,9 @@ implements Listener
 	@Override
 	public void onEnable() {
 
+		plugin = this;
+		CmdManager = new CommandManager(this);		
+		
 		if (!setupEconomy() ) {
             logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
@@ -89,10 +103,12 @@ implements Listener
 		listener = new GuardsListener(this);
 		getServer().getPluginManager().registerEvents(listener, this);
 
-		getCommand("duty").setExecutor(new DutyCommand(this));
-		getCommand("promoteGuard").setExecutor(new PromoteCommand(this));
-		getCommand("kit").setExecutor(new KitCommand(this));
-        
+		
+		CmdManager.initCommands();
+		/*
+
+        */
+		
         Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
         if (jailPlugin != null)
         {
@@ -123,91 +139,6 @@ implements Listener
 	      perms = rsp.getProvider();
 	      return perms != null;
 	 }
-
-		public void givePotionEffect (Player player, String name, int duration, int potency){
-
-			switch (name.toLowerCase())
-			{
-			case "blindness":
-			potion = PotionEffectType.BLINDNESS;
-			break;
-			case "confusion":
-			potion = PotionEffectType.CONFUSION;
-			break;
-			case "damage_resistance":
-			potion = PotionEffectType.DAMAGE_RESISTANCE;
-			break;
-			case "fast_digging":
-			potion = PotionEffectType.FAST_DIGGING;
-			break;
-			case "fire_resistance":
-			potion = PotionEffectType.FIRE_RESISTANCE;
-			break;
-			case "harm":
-			potion = PotionEffectType.HARM;
-			break;
-			case "heal":
-			potion = PotionEffectType.HEAL;
-			break;
-			case "hunger":
-			potion = PotionEffectType.HUNGER;
-			break;
-			case "jump":
-			potion = PotionEffectType.JUMP;
-			break;
-			case "poison":
-			potion = PotionEffectType.POISON;
-			break;
-			case "regenration":
-			potion = PotionEffectType.REGENERATION;
-			break;
-			case "slow":
-			potion = PotionEffectType.SLOW;
-			break;
-			case "speed":
-			potion = PotionEffectType.SPEED;
-			break;
-			case "increased_damage":
-			potion = PotionEffectType.INCREASE_DAMAGE;
-			break;
-			case "water_breathing":
-			potion = PotionEffectType.WATER_BREATHING;
-			break;
-			case "weakness":
-			potion = PotionEffectType.WEAKNESS;
-			break;
-			case "wither":
-			potion = PotionEffectType.WITHER;
-			break;
-			case "invisibility":
-			potion = PotionEffectType.INVISIBILITY;
-			break;
-			case "night_vision":
-			potion = PotionEffectType.NIGHT_VISION;
-			break;
-			default:
-			potion = null;
-			break;
-			}
-
-		    if (potion != null) {
-		    	player.addPotionEffect(new PotionEffect(potion,duration,potency));
-		    }
-		}
-		
-		public void kitPotionEffect(Player player){
-			List<String> listPotions;
-			listPotions = getConfig().getStringList("kits.Guard.potions");
-			//logger.info(listPotions.get(1));
-			int n = listPotions.size() -1;
-			int i;
-			for(i=0; i<=n ; i++) {
-				String data = listPotions.get(i);
-				String[] potion =data.split(":");
-				givePotionEffect(player, potion[0], Integer.MAX_VALUE, Integer.parseInt(potion[1]));
-			}
-			
-		}
 
 	public ItemStack setColor(ItemStack item, int color) {
 /*CraftItemStack craftStack = null;
@@ -591,7 +522,93 @@ return item;
         }
     }
 
+    public void kitPotionEffect(Player player){
+		plugin.logger.info("test");
+		List<String> listPotions;
+		listPotions = plugin.getConfig().getStringList("kits.Guard.potions");
+		//logger.info(listPotions.get(1));
+		int n = listPotions.size() -1;
+		int i;
+		for(i=0; i<=n ; i++) {
+			String data = listPotions.get(i);
+			String[] potion =data.split(":");
+			givePotionEffect(player, potion[0], Integer.MAX_VALUE, Integer.parseInt(potion[1]));
+		}
+		
+	}
+	
+	
+	public void givePotionEffect (Player player, String name, int duration, int potency){
 
+		switch (name.toLowerCase())
+		{
+		case "blindness":
+		plugin.potion = PotionEffectType.BLINDNESS;
+		break;
+		case "confusion":
+		plugin.potion = PotionEffectType.CONFUSION;
+		break;
+		case "damage_resistance":
+			plugin.potion = PotionEffectType.DAMAGE_RESISTANCE;
+		break;
+		case "fast_digging":
+			plugin.potion = PotionEffectType.FAST_DIGGING;
+		break;
+		case "fire_resistance":
+			plugin.potion = PotionEffectType.FIRE_RESISTANCE;
+		break;
+		case "harm":
+			plugin.potion = PotionEffectType.HARM;
+		break;
+		case "heal":
+			plugin.potion = PotionEffectType.HEAL;
+		break;
+		case "hunger":
+			plugin.potion = PotionEffectType.HUNGER;
+		break;
+		case "jump":
+			plugin.potion = PotionEffectType.JUMP;
+		break;
+		case "poison":
+			plugin.potion = PotionEffectType.POISON;
+		break;
+		case "regenration":
+			plugin.potion = PotionEffectType.REGENERATION;
+		break;
+		case "slow":
+			plugin.potion = PotionEffectType.SLOW;
+		break;
+		case "speed":
+			plugin.potion = PotionEffectType.SPEED;
+		break;
+		case "increased_damage":
+			plugin.potion = PotionEffectType.INCREASE_DAMAGE;
+		break;
+		case "water_breathing":
+			plugin.potion = PotionEffectType.WATER_BREATHING;
+		break;
+		case "weakness":
+			plugin.potion = PotionEffectType.WEAKNESS;
+		break;
+		case "wither":
+			plugin.potion = PotionEffectType.WITHER;
+		break;
+		case "invisibility":
+			plugin.potion = PotionEffectType.INVISIBILITY;
+		break;
+		case "night_vision":
+			plugin.potion = PotionEffectType.NIGHT_VISION;
+		break;
+		default:
+			plugin.potion = null;
+		break;
+		}
+
+	    if (plugin.potion != null) {
+	    	player.addPotionEffect(new PotionEffect(plugin.potion,duration,potency));
+	    }
+	}
+    
 	@Override
 	public void onDisable() {
 	    getConfig().set("onDuty", this.onDuty);

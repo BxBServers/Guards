@@ -1,4 +1,4 @@
-package com.bxbservers.Guards;
+package com.bxbservers.Guards.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -6,12 +6,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
+import com.bxbservers.Guards.Guards;
+
 public class KitCommand implements CommandExecutor{
 	
 	private Guards plugin;
 	
-	public KitCommand(Guards plugin) {
-		this.plugin = plugin;
+	public KitCommand(Guards instance) {
+		plugin = instance;
 	}
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -37,5 +39,7 @@ public class KitCommand implements CommandExecutor{
     	}
 	return false;
     }
+    
+
 	
 }

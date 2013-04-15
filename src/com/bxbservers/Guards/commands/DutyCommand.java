@@ -1,4 +1,4 @@
-package com.bxbservers.Guards;
+package com.bxbservers.Guards.commands;
 
 import java.util.List;
 
@@ -10,9 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.kitteh.tag.TagAPI;
 
+import com.bxbservers.Guards.Guards;
+import com.bxbservers.Guards.GuardsListener;
+
 public class DutyCommand implements CommandExecutor{
 
-	private Guards plugin;
+	  private Guards plugin;
+	  public GuardsListener listener;
+	  public CommandManager CmdManager;
+	  public KitCommand kit;
+	  public PromoteCommand promote;
 	
 	public DutyCommand(Guards plugin) {
 		this.plugin = plugin;
@@ -70,6 +77,7 @@ public class DutyCommand implements CommandExecutor{
 		
         //Give Kit
 		plugin.giveKit(player);
+		plugin.logger.info("I get here and player name is" + player.getName());
 		plugin.kitPotionEffect(player);
 		player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
         //End of Section
