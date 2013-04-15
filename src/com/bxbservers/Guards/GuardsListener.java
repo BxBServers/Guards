@@ -316,13 +316,5 @@ public class GuardsListener implements Listener{
 		
 	}
 	
-	@EventHandler
-	public void onNameTag(PlayerReceiveNameTagEvent e) {
-		Player player = e.getNamedPlayer();
-		if (plugin.onDuty.contains(player.getName())) {
-			if (player.getName().length() <15) {
-				e.setTag(ChatColor.RED + player.getName());
-			}
-		}
-	}
+
 }

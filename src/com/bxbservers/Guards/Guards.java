@@ -55,6 +55,7 @@ private FileConfiguration customConfig = null;
 private File customConfigFile = null;
 public JailAPI jail;
 public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
+public boolean TagAPIEnabled;
 
 public WorldGuardPlugin getWorldGuard() {
 Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");

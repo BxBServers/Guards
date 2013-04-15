@@ -61,7 +61,9 @@ public class DutyCommand implements CommandExecutor{
 	
 	private void setOnDuty(Player player, Boolean silent){
 		
+		if (plugin.TagAPIEnabled){
 		TagAPI.refreshPlayer(player); //refresh players tag. Makes it go red
+		}
 		
 		//Save Inventory Section
         plugin.getCustomConfig().set(player.getName() + ".inventory", player.getInventory().getContents());
@@ -105,7 +107,9 @@ public class DutyCommand implements CommandExecutor{
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setOffDuty(Player player, Boolean silent){
 		
+		if (plugin.TagAPIEnabled){
 		TagAPI.refreshPlayer(player); //refresh players tag. Makes it go red.
+		}
 		
 		//Clear Inventory and Potion Effects
 		player.getInventory().clear();
