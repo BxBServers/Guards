@@ -48,6 +48,7 @@ implements Listener
 	  public List<String> onDuty;
 	  public static Economy econ = null;
 	  public List<String> help;
+  	  public boolean silent = false;
 	  public GuardsListener listener;
 	  public FileConfiguration configFile;
 	  public Logger logger;
@@ -56,6 +57,7 @@ implements Listener
 	  private File customConfigFile = null;
 	  public JailAPI jail;
 	  public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
+	  
 	  public WorldGuardPlugin getWorldGuard() {
 		    Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
 		 
@@ -83,13 +85,16 @@ implements Listener
 		configFile = getConfig();
 		configFile.options().copyDefaults(true);
 		saveDefaultConfig();
-		
-		getLogger().info("Guards has been Enabled");
-		listener = new GuardsListener(this);
-		getServer().getPluginManager().registerEvents(listener, this);
 		this.onDuty = getConfig().getStringList("onDuty");
 		this.help = getConfig().getStringList("help");
         reloadCustomConfig();
+		
+		getLogger().info("Guards has been Enabled");
+		
+		listener = new GuardsListener(this);
+		getServer().getPluginManager().registerEvents(listener, this);
+		
+		getCommand("duty").setExecutor(new DutyCommand(this));
         
         Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
         if (jailPlugin != null)
@@ -119,39 +124,9 @@ implements Listener
 
 	
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-    	boolean silent = false;
-    	if(cmd.getName().equalsIgnoreCase("duty")){
-    		// If the player typed /basic then do the following...
-    		if (!(sender instanceof Player)) {
-    			sender.sendMessage("This command can Only be run by a player");
-    			return false;
-    		} else {   
-        		if (args.length == 1) {
-        			//logger.info("arguement Detected");
-        			//logger.info(args[0]);
-        			if (args[0].equalsIgnoreCase("silent")) {
-        				if (sender.hasPermission("guards.duty.silent")){
-        					silent=true;
-        					//logger.info("Silently going on duty");
-        				}
-        			}
-        		}
-    			Player player = (Player) sender;
-    			String name = player.getName();
-    			if (player.hasPermission("guards.duty")) {
-    				if (!this.onDuty.contains(name)) {
-    		              setOnDuty(player, silent);
-    		              this.onDuty.add(name);
-    		              return true;
-    		            } else if (this.onDuty.contains(name)) {
-    		              setOffDuty(player, silent);
-    		              this.onDuty.remove(name);
-    		              return true;
-    		            }
-    				}
-    			}
-    		} 
-    		else if (cmd.getName().equalsIgnoreCase("kit")){ 
+
+
+    		if (cmd.getName().equalsIgnoreCase("kit")){ 
     			if (!(sender instanceof Player)) {
     				sender.sendMessage("This command can Only be run by a player");
     				return false;
@@ -690,97 +665,7 @@ return item;
 
 
 
-	private void setOnDuty(Player player, Boolean silent){
-		
-		TagAPI.refreshPlayer(player);
-		//Save Inventory Section
-        getCustomConfig().set(player.getName() + ".inventory", player.getInventory().getContents());
-        getCustomConfig().set(player.getName() + ".armor", player.getInventory().getArmorContents());
-        //End of Section
-        
-        //Clear Inventory and Potion effects
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		for (PotionEffect effect : player.getActivePotionEffects())
-	        player.removePotionEffect(effect.getType());
-        
-        //Give Kit
-		this.giveKit(player);
-		player.sendMessage(prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
-        
-        //Set Perm Group
-        PermissionUser user = PermissionsEx.getUser(player);
-        user.addGroup("Guard");
-        
-        //Announce
-        if (silent) {
-            player.sendMessage(prefix+"You Silently come on duty");
-        } else {
-        	player.sendMessage(prefix+"You are now on Duty");
-        	for(Player all: getServer().getOnlinePlayers()) {
-        		if (all != player){
-        			all.sendMessage(prefix + "Guard " + player.getName() + " is now On Duty");
-        		}
-        	}
-		}
-	}
-	
 
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void setOffDuty(Player player, Boolean silent){
-		
-		TagAPI.refreshPlayer(player);
-		
-		//Clear Inventory and Potion Effects
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		for (PotionEffect effect : player.getActivePotionEffects())
-	        player.removePotionEffect(effect.getType());
-		
-		//Load Inventory Section
-		Object a = getCustomConfig().get(player.getName() + ".inventory");
-        Object b = getCustomConfig().get(player.getName() + ".armor");
-        if(a == null || b == null){
-            player.sendMessage(prefix +"No saved inventory to load");
-            return;
-        }
-        ItemStack[] inventory = null;
-        ItemStack[] armor = null;
-        if (a instanceof ItemStack[]){
-              inventory = (ItemStack[]) a;
-        } else if (a instanceof List){
-                List lista = (List) a;
-                inventory = (ItemStack[]) lista.toArray(new ItemStack[0]);
-        }
-        if (b instanceof ItemStack[]){
-                armor = (ItemStack[]) b;
-          } else if (b instanceof List){
-              List listb = (List) b;
-              armor = (ItemStack[]) listb.toArray(new ItemStack[0]);
-          }
-        player.getInventory().clear();
-        player.getInventory().setContents(inventory);
-        player.getInventory().setArmorContents(armor);
-        player.sendMessage(prefix+"Your Inventory was loaded");
-        //End of Section
-        
-		//Set Perm Group
-        PermissionUser user = PermissionsEx.getUser(player);
-        user.removeGroup("Guard");
-		
-		//Announce
-        if (silent) {
-            player.sendMessage(prefix+"You Silently come off duty");
-        } else {
-        	player.sendMessage(prefix+"You are now off Duty");
-        	for(Player all: getServer().getOnlinePlayers()) {
-        		if (all != player){
-        			all.sendMessage(prefix + "Guard " + player.getName() + " is now Off Duty");
-        		}
-        	}
-		}
-	}
 	
     //Method from http://wiki.bukkit.org/Configuration_API_Reference
     public void reloadCustomConfig() {
