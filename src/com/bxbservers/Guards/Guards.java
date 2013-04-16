@@ -26,7 +26,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.bxbservers.Guards.managers.CommandManager;
@@ -46,6 +45,7 @@ public ListenerManager ListenerManager;
 public static Economy econ = null;
 public static Permission perms = null;
 public List<String> help;
+private Guards plugin;
    public boolean silent = false;
 public FileConfiguration configFile;
 public Logger logger;
@@ -57,6 +57,7 @@ public String prefix = ChatColor.DARK_RED + "[Guards] " + ChatColor.GOLD;
 public boolean TagAPIEnabled;
 public boolean JailAPIEnabled;
 public boolean WorldGuardEnabled;
+public KitPotion kitPotion;
 
 public WorldGuardPlugin getWorldGuard() {
 Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -75,7 +76,9 @@ return (WorldGuardPlugin) WGplugin;
 
 @Override
 public void onEnable() {
-
+	
+	plugin = this;
+	
 	if (!setupEconomy() ) {
             logger.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
@@ -93,7 +96,7 @@ public void onEnable() {
        
     getLogger().info("Guards has been Enabled");
 
-
+    plugin.kitPotion = new KitPotion(plugin);
 
     getWorldGuard();
         
@@ -136,91 +139,6 @@ private boolean setupPermissions() {
 RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 perms = rsp.getProvider();
 return perms != null;
-}
-
-public void givePotionEffect (Player player, String name, int duration, int potency){
-
-switch (name.toLowerCase())
-{
-case "blindness":
-potion = PotionEffectType.BLINDNESS;
-break;
-case "confusion":
-potion = PotionEffectType.CONFUSION;
-break;
-case "damage_resistance":
-potion = PotionEffectType.DAMAGE_RESISTANCE;
-break;
-case "fast_digging":
-potion = PotionEffectType.FAST_DIGGING;
-break;
-case "fire_resistance":
-potion = PotionEffectType.FIRE_RESISTANCE;
-break;
-case "harm":
-potion = PotionEffectType.HARM;
-break;
-case "heal":
-potion = PotionEffectType.HEAL;
-break;
-case "hunger":
-potion = PotionEffectType.HUNGER;
-break;
-case "jump":
-potion = PotionEffectType.JUMP;
-break;
-case "poison":
-potion = PotionEffectType.POISON;
-break;
-case "regenration":
-potion = PotionEffectType.REGENERATION;
-break;
-case "slow":
-potion = PotionEffectType.SLOW;
-break;
-case "speed":
-potion = PotionEffectType.SPEED;
-break;
-case "increased_damage":
-potion = PotionEffectType.INCREASE_DAMAGE;
-break;
-case "water_breathing":
-potion = PotionEffectType.WATER_BREATHING;
-break;
-case "weakness":
-potion = PotionEffectType.WEAKNESS;
-break;
-case "wither":
-potion = PotionEffectType.WITHER;
-break;
-case "invisibility":
-potion = PotionEffectType.INVISIBILITY;
-break;
-case "night_vision":
-potion = PotionEffectType.NIGHT_VISION;
-break;
-default:
-potion = null;
-break;
-}
-
-if (potion != null) {
-player.addPotionEffect(new PotionEffect(potion,duration,potency));
-}
-}
-
-public void kitPotionEffect(Player player){
-List<String> listPotions;
-listPotions = getConfig().getStringList("kits.Guard.potions");
-//logger.info(listPotions.get(1));
-int n = listPotions.size() -1;
-int i;
-for(i=0; i<=n ; i++) {
-String data = listPotions.get(i);
-String[] potion =data.split(":");
-givePotionEffect(player, potion[0], Integer.MAX_VALUE, Integer.parseInt(potion[1]));
-}
-
 }
 
 public ItemStack setColor(ItemStack item, int color) {

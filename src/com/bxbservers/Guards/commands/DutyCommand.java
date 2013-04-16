@@ -79,7 +79,7 @@ public class DutyCommand implements CommandExecutor{
         //Give Kit
 		plugin.giveKit(player);
 		plugin.logger.info("I get here and player name is" + player.getName());
-		plugin.kitPotionEffect(player);
+		plugin.kitPotion.kitPotionEffect(player);
 		player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
         //End of Section
         
