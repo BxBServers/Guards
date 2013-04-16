@@ -5,6 +5,7 @@ import com.bxbservers.Guards.listeners.DeathListener;
 import com.bxbservers.Guards.listeners.DisableGuardEventsListener;
 import com.bxbservers.Guards.listeners.EntityDamageListener;
 import com.bxbservers.Guards.listeners.HandcuffListener;
+import com.bxbservers.Guards.listeners.RadioListener;
 import com.bxbservers.Guards.listeners.SignListener;
 import com.bxbservers.Guards.listeners.TagAPIListener;
 
@@ -18,6 +19,7 @@ public class ListenerManager {
 	private DisableGuardEventsListener guard;
 	private HandcuffListener handcuff;
 	private EntityDamageListener damage;
+	private RadioListener radio;
 	
 	public ListenerManager(Guards instance){
 		plugin = instance;
@@ -28,6 +30,7 @@ public class ListenerManager {
 		death = new DeathListener(plugin);
 		handcuff = new HandcuffListener(plugin);
 		damage = new EntityDamageListener(plugin);
+		radio = new RadioListener(plugin);
 	}
 	
 	public void initListeners() {
@@ -35,6 +38,7 @@ public class ListenerManager {
 		plugin.getServer().getPluginManager().registerEvents(death, plugin);
 		plugin.getServer().getPluginManager().registerEvents(guard, plugin);
 		plugin.getServer().getPluginManager().registerEvents(damage, plugin);
+		plugin.getServer().getPluginManager().registerEvents(radio, plugin);
 		
 		if (plugin.JailAPIEnabled)
 			plugin.getServer().getPluginManager().registerEvents(handcuff, plugin);

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -13,11 +14,11 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class RadioListener {
+public class RadioListener implements Listener {
 
 	private Guards plugin;
 	LinkedList< String > parentNames = new LinkedList< String >();
-	LinkedList< String > regions = new LinkedList< String >();
+	LinkedList< String > regions = new LinkedList< String >(); 
 	
 	public RadioListener(Guards instance){
 		this.plugin = instance;
@@ -25,6 +26,7 @@ public class RadioListener {
 	
 	@EventHandler
 	public void equipmentClick(PlayerInteractEvent e) {
+		regions.clear();
 		Player player = e.getPlayer();
 		Player user = e.getPlayer();
 		ItemStack stack =  user.getItemInHand();

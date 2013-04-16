@@ -3,6 +3,7 @@ package com.bxbservers.Guards.listeners;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ public class EntityDamageListener implements Listener {
 	}
 	
 	@SuppressWarnings({ "incomplete-switch" })
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;

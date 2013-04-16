@@ -63,11 +63,11 @@ Plugin WGplugin = getServer().getPluginManager().getPlugin("WorldGuard");
 
 // WorldGuard may not be loaded
 if (WGplugin == null || !(WGplugin instanceof WorldGuardPlugin)) {
-	logger.info("WorldGuardError");
-		WorldGuardEnabled=false;
+	    logger.info("WorldGuardError");
+		this.WorldGuardEnabled=false;
 		logger.severe("WorldGuard not Found. Disabling dependant sections.");	
 } else {
-	WorldGuardEnabled=true;
+	this.WorldGuardEnabled=true;
 }
 
 return (WorldGuardPlugin) WGplugin;
@@ -81,8 +81,7 @@ public void onEnable() {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-	cmdManager = new CommandManager(this);
-	ListenerManager = new ListenerManager(this);
+
 	logger = getLogger();
 	configFile = getConfig();
 	configFile.options().copyDefaults(true);
@@ -95,30 +94,32 @@ public void onEnable() {
     getLogger().info("Guards has been Enabled");
 
 
-    ListenerManager.initListeners();
 
-    cmdManager.initCommands();
     getWorldGuard();
         
     Plugin jailPlugin = getServer().getPluginManager().getPlugin("Jail");
     if (jailPlugin != null){
             jail = ((Jail) jailPlugin).API;
-            JailAPIEnabled=true;
+            this.JailAPIEnabled=true;
         }
     else {
-    	JailAPIEnabled=false;
+    	this.JailAPIEnabled=false;
         }
+    
     Plugin TagAPIPlugin = getServer().getPluginManager().getPlugin("TagAPI");
     if (TagAPIPlugin != null){
-            TagAPIEnabled=true;
+            this.TagAPIEnabled=true;
         }
     else {
-    	TagAPIEnabled=false;
+    	this.TagAPIEnabled=false;
     	logger.severe("TagAPI Not Found. Disabling dependant sections.");
         }
+	ListenerManager = new ListenerManager(this);
+	cmdManager = new CommandManager(this);
+    ListenerManager.initListeners();
+    cmdManager.initCommands();
 }
-
-
+	
 private boolean setupEconomy() {
 if (getServer().getPluginManager().getPlugin("Vault") == null) {
 return false;
