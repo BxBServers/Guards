@@ -39,7 +39,7 @@ public class RadioListener implements Listener {
 				plugin.help.add(user.getName());
 				
 				if (plugin.WorldGuardEnabled) {
-					RegionManager regionManager = plugin.getWorldGuard().getRegionManager(player.getWorld());
+					RegionManager regionManager = plugin.WGPlugin.getRegionManager(player.getWorld());
 					ApplicableRegionSet set = regionManager.getApplicableRegions(player.getLocation());
 								
 					for ( ProtectedRegion region : set ){

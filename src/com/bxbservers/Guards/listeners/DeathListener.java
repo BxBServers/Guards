@@ -106,7 +106,8 @@ public class DeathListener implements Listener {
 	public void onRespawn(PlayerRespawnEvent e){
 		Player player = e.getPlayer();
 		if (plugin.onDuty.contains(player.getName())) {
-				plugin.giveKit(player);
+				plugin.kitItems.giveItemKit(player);
+				plugin.kitArmour.giveArmourKit(player);
 				plugin.kitPotion.kitPotionEffect(player);
 				player.sendMessage(plugin.prefix +"You have received a new kit. Don't Lose it again");
         }

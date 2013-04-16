@@ -52,7 +52,8 @@ public class SignListener implements Listener{
 						if (plugin.onDuty.contains(player.getName())) {
 							player.getInventory().clear();
 							player.getInventory().setArmorContents(null);
-							plugin.giveKit(player);
+							plugin.kitItems.giveItemKit(player);
+							plugin.kitArmour.giveArmourKit(player);
 							plugin.kitPotion.kitPotionEffect(player);
 							player.sendMessage(plugin.prefix + "Kit has been Issued");
 						} else {

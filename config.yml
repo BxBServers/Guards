@@ -15,7 +15,7 @@ kits:
     potions:
       - SPEED:0
       - DAMAGE_RESISTANCE:1
-    items:
+    armour:
       #Options for armour leather,chainmail,iron,diamond
       helmet: chainmail
       chestplate: chainmail
@@ -26,6 +26,7 @@ kits:
       chestplateEnchant: '0:20 1:10 34:10'
       leggingsEnchant: '0:20 1:10 34:10'
       bootsEnchant: '0:20 1:10 34:10'
+    items:
       # Set Items for item slots 1 to 35 use format ItemId:Quantity:DamageValue EnchantId:EnchantStrength
       '0': '276 16:8 34:4'
       '1': '261 48:4 51:1 50:2 49:2'
@@ -70,5 +71,6 @@ kits:
         '3': 'PepperSpray'
         '4': 'HandCuffs'
         '5': 'Radio'
+configVersion: 1.0 
+#DO NOT TOUCH WILL RESET CONFIG
 #List of Players marked as onDuty DO NOT TOUCH
-onDuty:

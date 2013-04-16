@@ -64,8 +64,8 @@ public class DutyCommand implements CommandExecutor{
 		}
 		
 		//Save Inventory Section
-        plugin.getCustomConfig().set(player.getName() + ".inventory", player.getInventory().getContents());
-        plugin.getCustomConfig().set(player.getName() + ".armor", player.getInventory().getArmorContents());
+        plugin.getPlayerInventoryConfig().set(player.getName() + ".inventory", player.getInventory().getContents());
+        plugin.getPlayerInventoryConfig().set(player.getName() + ".armor", player.getInventory().getArmorContents());
         //End of Section
         
         //Clear Inventory and Potion effects
@@ -77,8 +77,8 @@ public class DutyCommand implements CommandExecutor{
 		
 		
         //Give Kit
-		plugin.giveKit(player);
-		plugin.logger.info("I get here and player name is" + player.getName());
+		plugin.kitItems.giveItemKit(player);
+		plugin.kitArmour.giveArmourKit(player);
 		plugin.kitPotion.kitPotionEffect(player);
 		player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock");
         //End of Section
@@ -117,8 +117,8 @@ public class DutyCommand implements CommandExecutor{
         //End of Section
 		
 		//Load Inventory Section
-		Object a = plugin.getCustomConfig().get(player.getName() + ".inventory");
-        Object b = plugin.getCustomConfig().get(player.getName() + ".armor");
+		Object a = plugin.getPlayerInventoryConfig().get(player.getName() + ".inventory");
+        Object b = plugin.getPlayerInventoryConfig().get(player.getName() + ".armor");
         if(a == null || b == null){
             player.sendMessage(plugin.prefix +"No saved inventory to load");
             return;
