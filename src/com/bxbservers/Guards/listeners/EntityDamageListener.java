@@ -39,8 +39,14 @@ public class EntityDamageListener implements Listener {
     			ItemStack stack =  attacker.getItemInHand();
     			int i = stack.getTypeId();
     			int d = stack.getDurability();
+    			
+    			String data = plugin.getConfig().getString("pepperSprayId");
+    			String[] dataSplit = data.split(":") ;
+    			if (dataSplit.length == 1) {
+    				dataSplit[1]=Integer.toString(0);
+    			}
 
-    			if (plugin.onDuty.contains((attacker.getName())) && (i==(397)) && d==4) {
+    			if (plugin.onDuty.contains((attacker.getName())) && (i==(Integer.parseInt(dataSplit[0]))) && d==Integer.parseInt(dataSplit[1])) {
     				
     				if ((player.getHealth() + player.getLastDamage())<=20){
     				player.setHealth(player.getHealth() + player.getLastDamage());

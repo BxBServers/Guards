@@ -32,7 +32,12 @@ public class RadioListener implements Listener {
 		ItemStack stack =  user.getItemInHand();
 		int i = stack.getTypeId();
 		int d = stack.getDurability();
-		if (plugin.onDuty.contains((user.getName())) && (i==(397)) && d==0) {
+		String data = plugin.getConfig().getString("radioId");
+		String[] dataSplit = data.split(":") ;
+		if (dataSplit.length == 1) {
+			dataSplit[1]=Integer.toString(0);
+		}
+		if (plugin.onDuty.contains((user.getName())) && (i==(Integer.parseInt(dataSplit[0]))) && d==Integer.parseInt(dataSplit[1])) {
 			if (e.getAction()==Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK){
 				if (!(plugin.help.contains(user.getName()))){
 				user.sendMessage(plugin.prefix+"Help Summoned");

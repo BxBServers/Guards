@@ -30,7 +30,7 @@ public class KitCommand implements CommandExecutor{
 					for (PotionEffect effect : player.getActivePotionEffects()) { //remove all potion effects
 				        player.removePotionEffect(effect.getType());
 					}
-					plugin.kitItems.giveItemKit(player); //give kit
+					plugin.kitItems.giveItemKit(player);
 					plugin.kitArmour.giveArmourKit(player);
 					plugin.kitPotion.kitPotionEffect(player); //give Potion effects
 					player.sendMessage(plugin.prefix + "Your Guard Kit has been Issued. Visit the Guard room to restock"); //send Confirmation

@@ -8,6 +8,9 @@ playerHeadFrequency: 10
 kitSignHeader: [Armoury]
 #This is the money given to the player when they kill a guard
 moneyOnGuardKill: 1000
+handcuffId: 384
+radioId: 397
+pepperSprayId: 397:4
 #Additional Kits not supported.
 kits:
   Guard:
