@@ -7,6 +7,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.bxbservers.Guards.Guards;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class HandcuffListener implements Listener {
 	
@@ -47,8 +49,19 @@ public class HandcuffListener implements Listener {
     			    plugin.jail.jailPlayer(playerName, time, null, reason);
     			    plugin.jail.getPrisoner(player.getName());
 
-                    //plugin.jail.jailPlayer(playerName, time, null, reason);
-    			        return;
+/*    			    
+    			    if (plugin.WorldGuardEnabled) {
+    					RegionManager regionManager = plugin.WGPlugin.getRegionManager(player.getWorld());
+    					ProtectedRegion region = regionManager.getRegionExact("Jail");
+    					if (region!=null) {
+
+    					} else {
+    						attacker.sendMessage("Please create WG region called 'Jail'");
+    						return;
+    					}
+    			    }			    
+  */  			    
+    			    return;
     			}
         	
         	}
