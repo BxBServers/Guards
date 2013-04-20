@@ -18,10 +18,10 @@ public class KitArmour {
 	public void giveArmourKit(Player player) {
 		
 		//Read Config File
-		String helmet = plugin.getConfig().getString("kits.Gyard.armour.helmet");
-		String chestplate = plugin.getConfig().getString("kits.Gyard.armour.chestplate");
-		String leggings = plugin.getConfig().getString("kits.Gyard.armour.leggings");
-		String boots = plugin.getConfig().getString("kits.Gyard.armour.boots");
+		String helmet = plugin.getConfig().getString("kits.Guard.armour.helmet");
+		String chestplate = plugin.getConfig().getString("kits.Guard.armour.chestplate");
+		String leggings = plugin.getConfig().getString("kits.Guard.armour.leggings");
+		String boots = plugin.getConfig().getString("kits.Guard.armour.boots");
 		
 		//Itemstacks to be given to player
 		ItemStack helmetStack = null;
