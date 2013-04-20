@@ -87,32 +87,37 @@ public class DeathListener implements Listener
 						
 						//drops skull
 						e.getDrops().add(Skull);
-						
-						
-						//money reward
+												
+						//reward preset amount of money
 			            EconomyResponse r = Guards.econ.depositPlayer(killer.getName(), plugin.getConfig().getInt("moneyOnGuardKill"));
-			            if(r.transactionSuccess()) {
-			               killer.sendMessage(String.format("You were rewarded %s for killing a guard", Guards.econ.format(r.amount)));
-			            } else {
-			                killer.sendMessage(String.format("An error occured: %s", r.errorMessage));
+			            if(r.transactionSuccess()) 
+			            {
+			            	//success; tell user 
+			            	killer.sendMessage(String.format("You were rewarded %s for killing a guard", Guards.econ.format(r.amount)));
+			            } 
+			            else
+			            {
+			            	//fail; tell server
+			                plugin.logger.severe("[Guards] Vault Error: " + r.errorMessage);
 			            }
 						
-						for(Player user: plugin.getServer().getOnlinePlayers()) {
-							if (!(plugin.onDuty.contains(user.getName()))) {
+			            
+						for(Player user: plugin.getServer().getOnlinePlayers()) 
+						{
+							if (!(plugin.onDuty.contains(user.getName())))
+							{
+								//tell non guard players that guard killed by killer
 								user.sendMessage(plugin.prefix +killer.getName() + " has just killed guard " + victim.getName());
 							}
-							
 						}
 						return;
-					} 
-					else
-					{
-						plugin.logger.info("Head Dropping Disabled");
-					}		
+					} 	
 			}
-			
-			
-			if(plugin.onDuty.contains(killer.getName())) {
+				
+				
+			//if on duty don't drop items
+			if(plugin.onDuty.contains(killer.getName()))
+			{
 				e.getDrops().clear();
 				return;
 			}
@@ -121,8 +126,10 @@ public class DeathListener implements Listener
 			int n = plugin.getConfig().getInt("playerHeadFrequency");
 			int rand = generator.nextInt(n);
 			plugin.logger.info(Integer.toString(rand));
-			if (rand==0){
-				if (plugin.getConfig().getBoolean("dropPlayerHeads")) {
+			if (rand==0)
+			{
+				if (plugin.getConfig().getBoolean("dropPlayerHeads")) 
+				{
 					plugin.logger.info("Head Dropping Enabled");
 					ItemStack Skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
 					SkullMeta skullMeta = (SkullMeta)Skull.getItemMeta();
@@ -139,13 +146,15 @@ public class DeathListener implements Listener
 	
 	//Gives Guard New Kit on Respawn
 	@EventHandler
-	public void onRespawn(PlayerRespawnEvent e){
+	public void onRespawn(PlayerRespawnEvent e)
+	{
 		Player player = e.getPlayer();
-		if (plugin.onDuty.contains(player.getName())) {
+		if (plugin.onDuty.contains(player.getName()))
+		{
 				plugin.kitItems.giveItemKit(player);
 				plugin.kitArmour.giveArmourKit(player);
 				plugin.kitPotion.kitPotionEffect(player);
-				player.sendMessage(plugin.prefix +"You have received a new kit. Don't Lose it again");
+				player.sendMessage(plugin.prefix + "You have received a new kit. Don't Lose it again");
         }
 	}
 	
