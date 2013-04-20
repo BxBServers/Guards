@@ -124,9 +124,14 @@ public class DeathListener implements Listener
 			
 			
 			int n = plugin.getConfig().getInt("playerHeadFrequency");
-			int rand = generator.nextInt(n);
-			plugin.logger.info(Integer.toString(rand));
-			if (rand==0)
+			int rand = 0;
+			
+			if (!(n == 0))
+			{
+				rand = generator.nextInt(n);
+			}
+			
+			if (rand==0 || n == 0)
 			{
 				if (plugin.getConfig().getBoolean("dropPlayerHeads")) 
 				{

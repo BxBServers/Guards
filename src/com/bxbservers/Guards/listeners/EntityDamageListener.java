@@ -53,11 +53,6 @@ public class EntityDamageListener implements Listener {
     				}
     				player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS,300,0));
     			}
-    			if (plugin.onDuty.contains((attacker.getName())) && (i==(397)) && d==1) {
-    				if ((player.getHealth() + player.getLastDamage())<=20){
-    				player.setHealth(player.getHealth() + player.getLastDamage());
-    				}
-    			}
         	
         	} 
         } else if(event.getDamager() instanceof Projectile){
