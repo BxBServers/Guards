@@ -14,6 +14,7 @@ public class KitArmour {
 		this.plugin = instance;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void giveArmourKit(Player player) {
 		
 		//Read Config File
